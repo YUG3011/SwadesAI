@@ -1,0 +1,21 @@
+{
+  "name": "multi-agent-support-system",
+  "private": true,
+  "packageManager": "npm@10.9.0",
+  "scripts": {
+    "dev:backend": "turbo dev --filter=backend",
+    "dev:frontend": "turbo dev --filter=frontend",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "format": "turbo format"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.1"
+  },
+  "workspaces": [
+    "backend",
+    "frontend",
+    "packages/*"
+  ]
+}
