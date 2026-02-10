@@ -20,10 +20,13 @@ const messageShape = z.object({
 
 const chatBook = new Hono();
 
+
 chatBook.get('/conversations', async (context) => {
   const rows = await grabConversationList();
   return context.json({ conversations: rows });
 });
+
+
 
 chatBook.get('/conversations/:id', async (context) => {
   const wantedId = context.req.param('id');
@@ -36,11 +39,16 @@ chatBook.get('/conversations/:id', async (context) => {
   return context.json({ conversation: foundConversation });
 });
 
+
+
 chatBook.delete('/conversations/:id', async (context) => {
   const wantedId = context.req.param('id');
   await dropConversation(wantedId);
   return context.json({ removed: true });
 });
+
+
+
 
 chatBook.post('/messages', zValidator('json', messageShape), async (context) => {
   const body = context.req.valid('json');

@@ -28,9 +28,13 @@ function App() {
   );
 
   const refreshChats = async () => {
-    const response = await fetch(`${apiHome}/chat/conversations`);
-    const data = await response.json();
-    setChatList(data.conversations ?? []);
+    try {
+      const response = await fetch(`${apiHome}/chat/conversations`);
+      const data = await response.json();
+      setChatList(data.conversations ?? []);
+    } catch (e) {
+      // ignore for now
+    }
   };
 
   useEffect(() => {
@@ -65,7 +69,7 @@ function App() {
             metaDone = true;
             continue;
           } catch (err) {
-            // fall through and treat as text
+            // treat as text
           }
         }
 
@@ -106,81 +110,66 @@ function App() {
 
       if (!response.ok || !response.body) {
         const messageText = await response.text();
-        setErrorNote(messageText || 'Request failed');
+        setErrorNote(messageText || 'request failed');
         setAgentTyping(false);
         return;
       }
 
       await readStreamReply(response);
       await refreshChats();
+      setUserWords('');
     } catch (err) {
-      setErrorNote('Something went wrong.');
+      setErrorNote('something went wrong.');
     } finally {
       setAgentTyping(false);
     }
   };
 
   return (
-    <div className="page-shell">
-      <header className="page-head">
-        <div>
-          <div className="title-text">Multi Agent Support</div>
-          <div className="subtitle-text">Router + Support + Order + Billing</div>
+    <div className="app">
+      <aside className="left">
+        <div className="header">
+          <div>
+            <strong>conversations</strong>
+          </div>
+          <div>
+            <button className="btn" onClick={refreshChats}>refresh</button>
+          </div>
         </div>
-        <button className="refresh-button" onClick={refreshChats}>
-          Refresh
-        </button>
-      </header>
 
-      <main className="layout">
-        <aside className="sidebar">
-          <div className="sidebar-head">Conversations</div>
-          <div className="sidebar-list">
-            {chatList.map((chatItem) => (
-              <button
-                key={chatItem.id}
-                className={`sidebar-row ${pickedChatId === chatItem.id ? 'active' : ''}`}
-                onClick={() => setPickedChatId(chatItem.id)}
-              >
-                <div className="row-title">{chatItem.subject}</div>
-                <div className="row-note">{chatItem.messages?.length ?? 0} messages</div>
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        <section className="chat-area">
-          <div className="chat-log">
-            {currentChat?.messages?.map((message, index) => (
-              <div key={index} className={`bubble ${message.role === 'user' ? 'user' : 'agent'}`}>
-                <div className="bubble-role">{message.role}</div>
-                <div className="bubble-text">{message.content}</div>
-                {message.agentType && <div className="bubble-note">agent: {message.agentType}</div>}
-              </div>
-            ))}
-            {agentTyping && (
-              <div className="bubble agent">
-                <div className="bubble-role">agent</div>
-                <div className="bubble-text">{liveReply || 'typing...'}</div>
-              </div>
-            )}
-          </div>
-
-          <div className="composer">
-            <textarea
-              value={userWords}
-              onChange={(evt) => setUserWords(evt.target.value)}
-              placeholder="Share your question or order/invoice number..."
-            />
-            <div className="composer-actions">
-              <button onClick={handleSend} disabled={!userWords || agentTyping}>
-                Send
-              </button>
-              {errorNote && <span className="error-text">{errorNote}</span>}
+        <div>
+          {chatList.map((chatItem) => (
+            <div
+              key={chatItem.id}
+              className={`conv-row ${pickedChatId === chatItem.id ? 'active' : ''}`}
+              onClick={() => setPickedChatId(chatItem.id)}
+            >
+              <div>{chatItem.subject}</div>
+              <div className="conv-sub">{chatItem.messages?.length ?? 0} messages</div>
             </div>
-          </div>
-        </section>
-      </main>
+          ))}
+        </div>
+      </aside>
+
+      <section className="right">
+        <div className="chat-log">
+          <div className="meta">subject: {currentChat?.subject ?? 'new chat'}</div>
+
+          {currentChat?.messages?.map((message, index) => (
+            <div key={index} className={`bubble ${message.role === 'user' ? 'user' : ''}`}>
+              <div>{message.content}</div>
+              {message.agentType && <div className="conv-sub">agent: {message.agentType}</div>}
+            </div>
+          ))}
+
+          {agentTyping && <div className="typing">{liveReply || 'agent is typing...'}</div>}
+        </div>
+
+        <div className="composer">
+          <textarea value={userWords} onChange={(e) => setUserWords(e.target.value)} placeholder="type your message..." />
+          <button className="btn" onClick={handleSend} disabled={!userWords || agentTyping}>send</button>
+        </div>
+      </section>
     </div>
   );
 }

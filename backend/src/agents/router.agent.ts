@@ -15,6 +15,7 @@ const senseIntent = (userWords: string): AgentKind => {
   return AgentKind.support;
 };
 
+
 const sendToAgent = async (
   userWords: string,
   storyTrail: Message[],
