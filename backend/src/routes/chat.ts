@@ -11,6 +11,7 @@ import {
   makeConversation,
 } from '../services/conversation.service';
 import { sendToAgent } from '../agents/router.agent';
+import { compactHistory } from '../services/compactor';
 
 const messageShape = z.object({
   conversationId: z.string().optional(),
@@ -63,16 +64,19 @@ chatBook.post('/messages', zValidator('json', messageShape), async (context) => 
   await addMessage(activeConversationId, 'user', body.content);
 
   const story = await grabConversationById(activeConversationId);
-  const historyTrail = story?.messages ?? [];
+  const historyTrail = compactHistory(story?.messages ?? []);
 
   const agentOutcome = await sendToAgent(body.content, historyTrail);
 
   await addMessage(activeConversationId, 'agent', agentOutcome.reply, agentOutcome.agentType);
 
   const replyLines = agentOutcome.reply.split(/(?<=[.!?])\s+/);
+  const thinkingNotes = ['thinking', 'searching', 'checking details'];
 
   return streamText(context, async (writer) => {
-    await writer.write(JSON.stringify({ conversationId: activeConversationId, agentType: agentOutcome.agentType }));
+    await writer.write(
+      JSON.stringify({ conversationId: activeConversationId, agentType: agentOutcome.agentType, thinking: thinkingNotes }),
+    );
     for (const line of replyLines) {
       await writer.write('\n');
       await writer.write(line);

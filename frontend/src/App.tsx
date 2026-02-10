@@ -21,6 +21,7 @@ function App() {
   const [agentTyping, setAgentTyping] = useState(false);
   const [liveReply, setLiveReply] = useState('');
   const [errorNote, setErrorNote] = useState('');
+  const [thinkingList, setThinkingList] = useState<string[]>([]);
 
   const currentChat = useMemo(
     () => chatList.find((item) => item.id === pickedChatId),
@@ -34,6 +35,18 @@ function App() {
       setChatList(data.conversations ?? []);
     } catch (e) {
       // ignore for now
+    }
+  };
+
+  const handleDelete = async (conversationId: string) => {
+    try {
+      await fetch(`${apiHome}/chat/conversations/${conversationId}`, { method: 'DELETE' });
+      setChatList((prev) => prev.filter((item) => item.id !== conversationId));
+      if (pickedChatId === conversationId) {
+        setPickedChatId(null);
+      }
+    } catch (e) {
+      setErrorNote('could not delete conversation');
     }
   };
 
@@ -66,6 +79,11 @@ function App() {
             const meta = JSON.parse(line);
             newChatId = meta.conversationId;
             setPickedChatId(meta.conversationId);
+            if (Array.isArray(meta.thinking)) {
+              setThinkingList(meta.thinking);
+            } else {
+              setThinkingList([]);
+            }
             metaDone = true;
             continue;
           } catch (err) {
@@ -101,6 +119,7 @@ function App() {
     setErrorNote('');
     setLiveReply('');
     setAgentTyping(true);
+    setThinkingList([]);
     try {
       const response = await fetch(`${apiHome}/chat/messages`, {
         method: 'POST',
@@ -146,6 +165,16 @@ function App() {
             >
               <div>{chatItem.subject}</div>
               <div className="conv-sub">{chatItem.messages?.length ?? 0} messages</div>
+              <button
+                className="btn"
+                style={{ marginTop: 6, background: '#ef4444', color: '#0b1220' }}
+                onClick={async (evt) => {
+                  evt.stopPropagation();
+                  await handleDelete(chatItem.id);
+                }}
+              >
+                delete
+              </button>
             </div>
           ))}
         </div>
@@ -162,6 +191,9 @@ function App() {
             </div>
           ))}
 
+          {thinkingList.length > 0 && agentTyping && (
+            <div className="typing">{thinkingList.join(' · ')}</div>
+          )}
           {agentTyping && <div className="typing">{liveReply || 'agent is typing...'}</div>}
         </div>
 
