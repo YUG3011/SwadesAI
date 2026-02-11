@@ -15,7 +15,7 @@ vi.mock('../src/agents/router.agent', () => ({
 
 import { chatBook } from '../src/routes/chat';
 
-// We test validation behavior only so tests remain fast and DB-free.
+// this is a testing file
 describe('Chat route validation', () => {
   it('returns 400 for empty content (validation)', async () => {
     const request = new Request('http://localhost/messages', {
