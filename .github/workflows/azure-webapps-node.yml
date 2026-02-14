@@ -1,53 +1,33 @@
-name: Build and deploy Node.js app to Azure Web App - ai-support
+name: Deploy Backend to Azure
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '20'
 
-      - name: Install and Build
-        run: |
-          cd backend
-          npm install
-          npm run generate
-          npm run build
+      - run: npm install
+        working-directory: ./backend
 
-      - name: Upload build folder
-        uses: actions/upload-artifact@v4
+      - run: npm run generate
+        working-directory: ./backend
+
+      - run: npm run build
+        working-directory: ./backend
+
+      - name: Deploy backend
+        uses: azure/webapps-deploy@v2
         with:
-          name: app
-          path: backend
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app
-
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy to Azure
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'ai-support-rg'
-          package: .
+          app-name: ai-support-rg
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./backend
