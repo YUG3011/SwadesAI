@@ -34,22 +34,25 @@ jobs:
         run: npm run build
         working-directory: ./backend
 
-      # 6. Upload the built code (dist + package.json)
-      - name: Upload build artifact
+      # 6. Zip the build
+      - name: Zip build
+        run: |
+          cd backend
+          zip -r backend.zip dist package.json node_modules
+
+      # 7. Upload zip artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: app
-          path: |
-            backend/dist
-            backend/package.json
-            backend/node_modules
+          path: backend/backend.zip
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      # 1. Download the build artifact
+      # 1. Download the zip artifact
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
@@ -61,5 +64,5 @@ jobs:
         with:
           app-name: 'ai-support-rg'  # Your Azure Web App name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./app  # The artifact will be downloaded here
+          package: ./app/backend.zip  # Point to the downloaded zip
           slot-name: production
