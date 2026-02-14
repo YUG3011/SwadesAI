@@ -1,4 +1,4 @@
-name: Deploy Backend to Azure
+name: Build and deploy Node.js app to Azure Web App
 
 on:
   push:
@@ -6,28 +6,47 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - run: npm install
+      # Install backend dependencies
+      - name: Install backend dependencies
+        run: npm install
         working-directory: ./backend
 
-      - run: npm run generate
+      # Build backend
+      - name: Build backend
+        run: npm run build
         working-directory: ./backend
 
-      - run: npm run build
-        working-directory: ./backend
+      # Upload the built backend (including dist)
+      - name: Upload backend artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-build
+          path: ./backend
 
-      - name: Deploy backend
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-build
+
+      - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ai-support-rg
+          app-name: 'ai-support-rg' 
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./backend
+          package: backend
