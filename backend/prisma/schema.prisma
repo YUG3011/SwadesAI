@@ -8,21 +8,52 @@ datasource db {
 }
 
 model Conversation {
-  id          String    @id @default(cuid())
-  subject     String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  messages    Message[]
+  id        String    @id @default(cuid())
+  subject   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
 }
 
 model Message {
-  id             String        @id @default(cuid())
+  id             String       @id @default(cuid())
   conversationId String
-  conversation   Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   role           MessageRole
   content        String
   agentType      AgentKind?
-  createdAt      DateTime      @default(now())
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id             String    @id @default(cuid())
+  orderNumber    String    @unique
+  status         String
+  deliveryStatus String
+  customerName   String
+  createdAt      DateTime  @default(now())
+  invoices       Invoice[]
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String   @unique
+  orderId       String
+  amountCents   Int
+  currency      String
+  paid          Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  refund        Refund?
+}
+
+model Refund {
+  id        String   @id @default(cuid())
+  invoiceId String   @unique
+  status    String
+  reason    String
+  createdAt DateTime @default(now())
+  invoice   Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 }
 
 enum MessageRole {
@@ -37,35 +68,4 @@ enum AgentKind {
   order
   billing
   fallback
-}
-
-model Order {
-  id             String   @id @default(cuid())
-  orderNumber    String   @unique
-  status         String
-  deliveryStatus String
-  customerName   String
-  createdAt      DateTime @default(now())
-  invoices       Invoice[]
-}
-
-model Invoice {
-  id            String   @id @default(cuid())
-  invoiceNumber String   @unique
-  orderId       String
-  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  refund        Refund?
-  amountCents   Int
-  currency      String
-  paid          Boolean  @default(false)
-  createdAt     DateTime @default(now())
-}
-
-model Refund {
-  id           String   @id @default(cuid())
-  invoiceId    String   @unique
-  invoice      Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  status       String
-  reason       String
-  createdAt    DateTime @default(now())
 }

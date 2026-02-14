@@ -16,6 +16,8 @@ What this project does
       <!-- POSTGRES_USER: postgres -->
       <!-- POSTGRES_PASSWORD: postgres -->
       <!-- POSTGRES_DB: multi_agent_support --> 
+
+      -------------------------------------------------
 Quick start (dev)
 1. Install dependecies for backend and frontend:
    - `cd backend && npm install`
