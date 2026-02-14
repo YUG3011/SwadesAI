@@ -32,7 +32,7 @@ console.log("Using port:", portChoice);
 serve({
   fetch: app.fetch,
   port: portChoice,
-  hostname: '0.0.0.0',   // ⭐ VERY IMPORTANT
+  hostname: '0.0.0.0', 
 });
 
 console.log(`Backend running on port ${portChoice}`);
