@@ -18,6 +18,8 @@ webApp.route('/agents', agentBook);
 webApp.get('/health', (context) => context.json({ ok: true }));
 
 const portChoice = Number(process.env.PORT ?? '3000');
+console.log("PORT FROM ENV:", process.env.PORT);
+console.log("Using port:", portChoice);
 
 serve({
   fetch: webApp.fetch,
