@@ -1,8 +1,8 @@
 import { AgentKind } from '@prisma/client';
 import type { Message } from '@prisma/client';
-import { runSupportAgent } from './support.agent';
-import { runOrderAgent } from './order.agent';
-import { runBillingAgent } from './billing.agent';
+import { runSupportAgent } from './support.agent.js';
+import { runOrderAgent } from './order.agent.js';
+import { runBillingAgent } from './billing.agent.js';
 
 const senseIntent = (userWords: string): AgentKind => {
   const lowerWords = userWords.toLowerCase();

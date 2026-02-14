@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
-import { errorCatcher } from './middleware/errorHandler';
-import { buildRateLimiter } from './middleware/rateLimiter';
-import { chatBook } from './routes/chat';
-import { agentBook } from './routes/agents';
+import { errorCatcher } from './middleware/errorHandler.js';
+import { buildRateLimiter } from './middleware/rateLimiter.js';
+import { chatBook } from './routes/chat.js';
+import { agentBook } from './routes/agents.js';
 
 const app = new Hono();
 

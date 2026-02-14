@@ -1,4 +1,4 @@
-import { dataBridge } from '../db/client';
+import { dataBridge } from '../db/client.js';
 
 const findInvoiceNumber = (userWords: string) => {
   const numberPick = userWords.match(/INV-\d+/i);

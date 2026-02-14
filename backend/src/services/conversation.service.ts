@@ -1,5 +1,5 @@
 import { AgentKind, MessageRole } from '@prisma/client';
-import { dataBridge } from '../db/client';
+import { dataBridge } from '../db/client.js';
 
 const grabConversationList = () =>
   dataBridge.conversation.findMany({

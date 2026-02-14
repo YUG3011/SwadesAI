@@ -1,4 +1,4 @@
-import { dataBridge } from '../db/client';
+import { dataBridge } from '../db/client.js';
 
 const findOrderNumber = (userWords: string) => {
   const numberPick = userWords.match(/ORD-\d+/i);
