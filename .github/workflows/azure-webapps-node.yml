@@ -1,52 +1,65 @@
-name: Build and deploy Node.js app to Azure Web App
+name: Build and Deploy Node.js App to Azure
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger deployment on main branch
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout your repo
       - uses: actions/checkout@v4
 
+      # 2. Set Node.js version
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      # Install backend dependencies
-      - name: Install backend dependencies
+      # 3. Install backend dependencies
+      - name: Install dependencies
         run: npm install
         working-directory: ./backend
 
-      # Build backend
-      - name: Build backend
+      # 4. Generate Prisma client
+      - name: Generate Prisma
+        run: npm run generate
+        working-directory: ./backend
+
+      # 5. Build TypeScript project
+      - name: Build project
         run: npm run build
         working-directory: ./backend
 
-      # Upload the built backend (including dist)
-      - name: Upload backend artifact
+      # 6. Upload the built code (dist + package.json)
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: backend-build
-          path: ./backend
+          name: app
+          path: |
+            backend/dist
+            backend/package.json
+            backend/node_modules
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Download backend artifact
+      # 1. Download the build artifact
+      - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: backend-build
+          name: app
 
+      # 2. Deploy to Azure Web App
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'ai-support-rg' 
+          app-name: 'ai-support-rg'  # Your Azure Web App name
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: backend
+          package: ./app  # The artifact will be downloaded here
+          slot-name: production
