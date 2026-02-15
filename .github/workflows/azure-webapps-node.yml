@@ -44,7 +44,7 @@ jobs:
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'ai-support-rg'  
+          app-name: 'ai-support-rg-b0epdvbgcrb9c9ad'  
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./backend/backend.zip
           slot-name: production
