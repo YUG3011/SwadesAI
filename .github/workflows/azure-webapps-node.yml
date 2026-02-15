@@ -3,7 +3,7 @@ name: Build and Deploy Node.js App to Azure
 on:
   push:
     branches:
-      - main  # Trigger deployment on main branch
+      - main
 
 jobs:
   build-and-deploy:
@@ -40,10 +40,15 @@ jobs:
           cd backend
           zip -r backend.zip dist package.json node_modules
 
-      # 7. Deploy to Azure Web App
+      # 7. Azure Login (NEW STEP)
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # 8. Deploy to Azure Web App (UPDATED)
       - name: Deploy to Azure
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'ai-support-rg'  
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          app-name: 'ai-support-rg'
           package: ./backend/backend.zip
