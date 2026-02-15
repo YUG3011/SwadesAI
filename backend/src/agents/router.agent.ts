@@ -1,10 +1,11 @@
-import { AgentKind } from '@prisma/client';
+import pkg from '@prisma/client';
+const { AgentKind, PrismaClient } = pkg; // destructure what you need
 import type { Message } from '@prisma/client';
 import { runSupportAgent } from './support.agent.js';
 import { runOrderAgent } from './order.agent.js';
 import { runBillingAgent } from './billing.agent.js';
 
-const senseIntent = (userWords: string): AgentKind => {
+const senseIntent = (userWords: string): typeof AgentKind[keyof typeof AgentKind] => {
   const lowerWords = userWords.toLowerCase();
   if (lowerWords.match(/order|track|shipping|delivery|package/)) {
     return AgentKind.order;
@@ -15,11 +16,10 @@ const senseIntent = (userWords: string): AgentKind => {
   return AgentKind.support;
 };
 
-
 const sendToAgent = async (
   userWords: string,
   storyTrail: Message[],
-): Promise<{ agentType: AgentKind; reply: string }> => {
+): Promise<{ agentType: typeof AgentKind[keyof typeof AgentKind]; reply: string }> => {
   const chosenAgent = senseIntent(userWords);
 
   if (chosenAgent === AgentKind.order) {
