@@ -14,10 +14,10 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Build outputs
-dist/
+
 build/
 frontend/dist/
-backend/dist/
+
 .vite/
 .turbo/
 .cache/
