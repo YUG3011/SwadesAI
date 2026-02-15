@@ -1,5 +1,6 @@
-import type { Message } from '@prisma/client';
-import { MessageRole } from '@prisma/client';
+import type { Message, MessageRole as MessageRoleType } from '@prisma/client';
+import pkg from '@prisma/client';
+const { MessageRole } = pkg;
 
 interface CompactOptions {
   maxMessages: number;
@@ -20,7 +21,7 @@ const shorten = (text: string, limit: number) => {
   return `${text.slice(0, limit - 3)}...`;
 };
 
-const roleLabel: Record<MessageRole, string> = {
+const roleLabel: Record<MessageRoleType, string> = {
   user: 'Customer',
   agent: 'Agent',
   system: 'System',

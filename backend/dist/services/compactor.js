@@ -1,4 +1,5 @@
-import { MessageRole } from '@prisma/client';
+import pkg from '@prisma/client';
+const { MessageRole } = pkg;
 const defaultSettings = {
     maxMessages: 18,
     preserveRecent: 8,
