@@ -39,5 +39,5 @@ jobs:
         with:
           app-name: 'ai-support-rg'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./backend/backend.zip
+          package: ./backend
           slot-name: production
