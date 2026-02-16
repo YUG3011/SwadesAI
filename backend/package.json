@@ -10,7 +10,8 @@
     "lint": "eslint 'src/**/*.{ts,tsx}'",
     "format": "prettier --write 'src/**/*.{ts,tsx,js,json}'",
     "test": "vitest",
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",

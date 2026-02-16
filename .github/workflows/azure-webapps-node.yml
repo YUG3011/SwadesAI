@@ -32,7 +32,17 @@ jobs:
       - name: Zip build
         run: |
           cd backend
-          zip -r backend.zip dist package.json node_modules prisma
+          if [ ! -d .prisma ] && [ -d node_modules/.prisma ]; then
+            cp -R node_modules/.prisma .prisma
+          fi
+          targets="dist package.json node_modules prisma"
+          if [ -f package-lock.json ]; then
+            targets="$targets package-lock.json"
+          fi
+          if [ -d .prisma ]; then
+            targets="$targets .prisma"
+          fi
+          zip -r backend.zip $targets
 
       - name: Azure Login
         uses: azure/login@v2
