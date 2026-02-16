@@ -2,9 +2,11 @@ import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { streamText } from 'hono/streaming';
+import pkg from '@prisma/client';
 import { addMessage, dropConversation, grabConversationById, grabConversationList, makeConversation, } from '../services/conversation.service.js';
 import { sendToAgent } from '../agents/router.agent.js';
 import { compactHistory } from '../services/compactor.js';
+const { AgentKind } = pkg;
 const messageShape = z.object({
     conversationId: z.string().optional(),
     subject: z.string().optional(),

@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
-import { AgentKind } from '@prisma/client';
+import pkg from '@prisma/client';
+const { AgentKind } = pkg;
 const agentCatalog = [
     {
         type: AgentKind.support,

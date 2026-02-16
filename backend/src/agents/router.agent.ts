@@ -1,5 +1,5 @@
 import pkg from '@prisma/client';
-const { AgentKind, PrismaClient } = pkg; // destructure what you need
+const { AgentKind } = pkg;
 import type { Message } from '@prisma/client';
 import { runSupportAgent } from './support.agent.js';
 import { runOrderAgent } from './order.agent.js';

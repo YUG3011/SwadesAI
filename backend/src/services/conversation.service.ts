@@ -1,4 +1,4 @@
-import { AgentKind, MessageRole } from '@prisma/client';
+import type { AgentKind, MessageRole } from '@prisma/client';
 import { dataBridge } from '../db/client.js';
 
 const grabConversationList = () =>

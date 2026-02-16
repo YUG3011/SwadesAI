@@ -6,7 +6,7 @@ import { buildRateLimiter } from './middleware/rateLimiter.js';
 import { chatBook } from './routes/chat.js';
 import { agentBook } from './routes/agents.js';
 const app = new Hono();
-// Root route for Azure health check
+// Root route for Azure to do health check
 app.get('/', (c) => c.text('Server is running'));
 // API routes
 const webApp = new Hono().basePath('/api');
