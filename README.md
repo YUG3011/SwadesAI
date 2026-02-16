@@ -38,3 +38,16 @@ Testing
 Notes about compaction and rate limit
 - The compactor (`backend/src/services/compactor.ts`) keeps the most recent messages and folds older messages into a short system summary. This reduces token usage when calling LLMs.
 - The rate limiter (`backend/src/middleware/rateLimiter.ts`) defaults to 30 requests per minute and returns proper `X-RateLimit-*` headers when in use.
+
+Deploy frontend with backend
+1. Build the frontend:
+   - `cd frontend && npm install && npm run build`
+2. Copy the build into the backend `public` folder:
+   - `mkdir -p backend/public`
+   - `cp -r frontend/dist/* backend/public/` (Windows PowerShell: `Copy-Item -Recurse frontend\dist\* backend\public`)
+3. The backend already serves static files from `backend/public` and provides an SPA fallback.
+4. Deploy the backend to Azure (same app):
+   - `az webapp deploy --resource-group <rg> --name <app-name> --src-path backend`
+After deployment:
+- `https://<app-name>.azurewebsites.net/` → Frontend UI
+- `https://<app-name>.azurewebsites.net/api/...` → API
