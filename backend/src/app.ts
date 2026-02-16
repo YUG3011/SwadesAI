@@ -8,7 +8,7 @@ import { agentBook } from './routes/agents.js';
 
 const app = new Hono();
 
-// Root route for Azure health check
+// Root route for Azure to do checking of health
 app.get('/', (c) => c.text('Server is running'));
 
 // API routes
