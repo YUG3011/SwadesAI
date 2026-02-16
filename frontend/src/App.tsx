@@ -12,7 +12,7 @@ interface ConversationItem {
   messages?: ChatMessage[];
 }
 
-const apiHome = 'http://localhost:3000/api';
+const apiHome = 'https://ai-support-rg-b0epdvbgcrb9c9ad.centralindia-01.azurewebsites.net/api';
 
 function App() {
   const [chatList, setChatList] = useState<ConversationItem[]>([]);
