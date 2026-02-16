@@ -10,7 +10,11 @@ import { chatBook } from './routes/chat.js';
 import { agentBook } from './routes/agents.js';
 
 const app = new Hono();
-
+console.log("DATABASE_URL =", process.env.DATABASE_URL);
+console.log("DATABASE_URL =", process.env.DATABASE_URL);
+console.log("DATABASE_URL =", process.env.DATABASE_URL);
+console.log("DATABASE_URL =", process.env.DATABASE_URL);
+console.log("DATABASE_URL =", process.env.DATABASE_URL);
 // API routes
 const webApp = new Hono().basePath('/api');
 
