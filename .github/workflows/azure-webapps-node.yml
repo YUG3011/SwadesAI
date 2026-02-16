@@ -28,11 +28,11 @@ jobs:
         run: npm run build
         working-directory: ./backend
 
-      - name: Copy runtime dependencies into backend
+      - name: Copy dependencies and regenerate Prisma
         run: |
           rm -rf backend/node_modules
           cp -R node_modules backend/node_modules
-          npm prune --omit=dev --prefix backend
+          npm run generate --prefix backend
 
       - name: Zip build
         run: |

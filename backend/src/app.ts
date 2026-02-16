@@ -1,3 +1,4 @@
+import process from 'node:process';
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { cors } from 'hono/cors';
@@ -24,7 +25,7 @@ webApp.get('/health', (c) => c.json({ ok: true }));
 
 app.route('/', webApp);
 
-const portChoice = Number(process.env.PORT || 8080);
+const portChoice = Number.parseInt(process.env.PORT ?? '8080', 10);
 
 console.log("PORT FROM ENV:", process.env.PORT);
 console.log("Using port:", portChoice);
@@ -32,7 +33,7 @@ console.log("Using port:", portChoice);
 serve({
   fetch: app.fetch,
   port: portChoice,
-  hostname: '0.0.0.0', 
+  hostname: '0.0.0.0',
 });
 
 console.log(`Backend running on port ${portChoice}`);
