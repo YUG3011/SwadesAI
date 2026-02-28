@@ -11,11 +11,7 @@ import { agentBook } from './routes/agents.js';
 
 const app = new Hono();
 console.log("DATABASE_URL =", process.env.DATABASE_URL);
-console.log("DATABASE_URL =", process.env.DATABASE_URL);
-console.log("DATABASE_URL =", process.env.DATABASE_URL);
-console.log("DATABASE_URL =", process.env.DATABASE_URL);
-console.log("DATABASE_URL =", process.env.DATABASE_URL);
-// API routes
+
 const webApp = new Hono().basePath('/api');
 
 webApp.use('*', cors());
@@ -28,17 +24,14 @@ webApp.get('/health', (c) => c.json({ ok: true }));
 
 app.route('/', webApp);
 
-// Serve static assets (from frontend build) and SPA fallback
-// Assets (e.g. hashed JS/CSS) will be served from /assets/*
+
 app.use('/assets/*', serveStatic({ root: './public' }));
 
-// SPA fallback for client-side routing (React/Vite)
 app.get('*', async (c) => {
   try {
     const html = await readFile('./public/index.html', 'utf-8');
     return c.html(html);
   } catch (e) {
-    // If public/index.html doesn't exist, fall back to health text
     return c.text('Server is running');
   }
 });
